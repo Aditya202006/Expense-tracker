@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:3000";
+const API_URL =
+    import.meta.env.VITE_API_URL ||
+    "http://localhost:3000";
 
 export const apiFetch = async (endpoint, options = {}) => {
     const token = localStorage.getItem("token");
@@ -13,20 +15,8 @@ export const apiFetch = async (endpoint, options = {}) => {
         headers.set("Authorization", `Bearer ${token}`);
     }
 
-    const response = await fetch(`${API_URL}${endpoint}`, {
+    return fetch(`${API_URL}${endpoint}`, {
         ...options,
         headers
     });
-
-    // JWT expired / invalid
-    if (response.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-
-        window.location.href = "/login";
-
-        return response;
-    }
-
-    return response;
 };
